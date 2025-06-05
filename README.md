@@ -8,10 +8,12 @@
 </div>
 
 
-Aha, you find the MCP-Zero so early! :D
 
-We are working on it, and the dataset is ready to be released. Please check it out!
+Aha, you find the repo of MCP-Zero so early! :D
 
+We are working on it, and the dataset is now released. Please check it out!
+
+Also focus on our paper: [Arxiv link](https://arxiv.org/abs/2506.01056)
 
 ---
 
