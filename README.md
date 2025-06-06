@@ -3,7 +3,7 @@
 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
   <img src="assets/robot.png" alt="MCP-Zero Robot" width="24" height="24">
   <a href="https://arxiv.org/abs/2506.01056">
-    <img src="https://img.shields.io/badge/Paper-arXiv-red" height="18">
+    <img src="https://img.shields.io/badge/Paper-arXiv-red" height="20">
   </a>
 </div>
 
@@ -58,4 +58,20 @@ Data structure:
 }
 ```
 
+
+## Citation
+
+> Citation makes me happy.
+> 
+>   --Shakespeare
+>   ~~(just for fun :D)~~
+
+```bibtex
+@article{fei2025mcp,
+  title={MCP-Zero: Proactive Toolchain Construction for LLM Agents from Scratch},
+  author={Fei, Xiang and Zheng, Xiawu and Feng, Hao},
+  journal={arXiv preprint arXiv:2506.01056},
+  year={2025}
+}
+```
 
