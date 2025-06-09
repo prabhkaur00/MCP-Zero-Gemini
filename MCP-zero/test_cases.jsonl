@@ -1,0 +1,1 @@
+{"id": "github_repo_search", "input": "好的，用户需要搜索GitHub上的仓库，我需要调用工具来实现这一点。\n\n<tool_assistant>\nserver: GitHub\ntask: 搜索特定条件的代码仓库\n</tool_assistant>"}
