@@ -1,4 +1,4 @@
-## MCP-Zero: Proactive Toolchain Construction for LLM Agents from Scratch
+## MCP-Zero: Active Tool Discovery for Autonomous LLM Agents
 
 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
   <img src="assets/robot.png" alt="MCP-Zero Robot" width="24" height="24">
@@ -74,7 +74,7 @@ We have now released our code for hierarchical semantic matching, and other feat
 
 ```bibtex
 @article{fei2025mcp,
-  title={MCP-Zero: Proactive Toolchain Construction for LLM Agents from Scratch},
+  title={MCP-Zero: Active Tool Discovery for Autonomous LLM Agents},
   author={Fei, Xiang and Zheng, Xiawu and Feng, Hao},
   journal={arXiv preprint arXiv:2506.01056},
   year={2025}
