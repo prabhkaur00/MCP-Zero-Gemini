@@ -1,0 +1,9 @@
+Generate an API request with the tool description based on the dialogue context.
+The tool description should be concise and to the point, and MUST be in the following format:
+
+<tool_assistant>
+tool: [describe the tool functionality]
+</tool_assistant>
+
+Based on the dialogue context, identify the specific task that needs to be performed and describe it accurately using a style similar to API documentation. Ensure your description is clear, precise, and do not include detailed values.
+Only output the tool description within the specified format. Do not provide any explanation or commentary.

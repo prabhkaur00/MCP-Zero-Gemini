@@ -10,9 +10,9 @@
 Paper: [https://arxiv.org/abs/2506.01056](https://arxiv.org/abs/2506.01056)
 
 
-Aha, you find the repo of MCP-Zero so early! :D
+Thanks for your attention for MCP-Zero! 🤗
 
-We've released our dataset and partial code, while more features are on the way. Please check it out!
+We have now open-sourced the code involved in the paper. We will continue to update our work, explore its application in the industry, and continue to expand this project.
 
 
 <div align="center">
@@ -23,24 +23,33 @@ We've released our dataset and partial code, while more features are on the way.
 
 ### Method: MCP-Zero
 
-- **File Path**: `./MCP-zero/`
+```
+MCP-zero/
+├── experiment_apibank.py       # experiments: APIBank
+├── experiment_mcptools.py      # experiments: mcp_tools (needle test)
+├── matcher.py                  # code for similarity matching
+├── prompt_guide/               # prompts for our method
+├── reformatter.py              # json formatter for tool description
+├── sampler.py                  # sampler for selecting target tool
+├── test_cases.jsonl            # testcase for the matcher
+├── test_matcher.py             # unit test for the matcher
+└── utils.py                    # utils: grid_search
+```
 
-We have now released our code for hierarchical semantic matching, and other features will be added recently. Leave a star🌟 to let me know you are staying updated :D
+We have now released our code for the paper. The code in the paper implements retrieval capabilities and achieves concrete results in experiments.
+
+In our future work, we are committed to applying MCP-zero to the industry, so other modules still need to be involved, such as the dynamic deployment of MCP servers, the environment deployment for GAIA test, etc. We will continue to improve our work, and thank you all for your attention to this work. Leave a star🌟 to let me know you are staying updated :D
 
 
 
 ### Dataset: MCP-tools
 
-- **Dataset Path**: `./MCP-tools/mcp_tools_with_embedding.json`
-
 - **Google Drive**: [Download Link](https://drive.google.com/file/d/1RjBGU-AGdHdhUABoeYSztbfQlD0hjUBn/view?usp=sharing)
-
 - **Huggingface Link**: Coming soon
+- **Put the file at**: `./MCP-tools/mcp_tools_with_embedding.json`
 
-> My Git LFS bandwidth quota has been exhausted, please use the Google Drive link to download instead. Thank you all for your attention to this work. 
 
-
-**Introduction**: A dataset containing all filtered tools from the MCP official repo. 308 servers and 2,797 tools in total.
+**Introduction**: A dataset containing all filtered tools (308 servers and 2,797 tools in total) from the MCP official repo.
 
 **Data structure**:
 ```
@@ -62,6 +71,17 @@ We have now released our code for hierarchical semantic matching, and other feat
     }
   ]
 }
+```
+
+**Build dataset on your own**: If you want to build custom dataset for MCP servers, you may follow the code under the `MCP-tools/build_data` folder.
+
+```
+MCP-tools/
+├── build_data
+│   ├── get_server_summary.py       # code to extract structural data for MCP server's ReadMe file
+│   ├── run_vllm.sh                 # deploy the Qwen2.5-72B-Instruct model with VLLM
+│   └── server_summary.prompt       # the prompt for extracting dataset
+└── download_data.md
 ```
 
 
