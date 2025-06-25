@@ -1,13 +1,14 @@
 ## MCP-Zero: Active Tool Discovery for Autonomous LLM Agents
 
 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-  <img src="assets/robot.png" alt="MCP-Zero Robot" width="24" height="24">
+  <!-- <img src="assets/robot.png" alt="MCP-Zero Robot" width="24" height="24"> -->
   <a href="https://arxiv.org/abs/2506.01056">
-    <img src="https://img.shields.io/badge/arXiv-2506.01056-red" height="20">
+    <img src="https://img.shields.io/badge/Paper-arXiv-red">
+  </a>
+  <a href="https://arxiv.org/abs/2506.01056">
+    https://arxiv.org/abs/2506.01056
   </a>
 </div>
-
-Paper: [https://arxiv.org/abs/2506.01056](https://arxiv.org/abs/2506.01056)
 
 
 Thanks for your attention for MCP-Zero! 🤗
