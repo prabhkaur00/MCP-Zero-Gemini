@@ -359,7 +359,7 @@ def run_grid_search(
 
 if __name__ == "__main__":
     # 默认数据路径
-    data_path = "./mcp-tools/all_servers_filtered_with_embedding.json"
+    data_path = "./mcp-tools/mcp_tools_with_embedding.json"
     
     # 运行网格搜索
     run_grid_search(

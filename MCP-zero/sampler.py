@@ -119,7 +119,7 @@ class ToolSampler:
 
 
 if __name__ == "__main__":
-    data_path = "./mcp-tools/all_servers_filtered_with_embedding.json"
+    data_path = "./mcp-tools/mcp_tools_with_embedding.json"
     sampler = ToolSampler(data_path)
     sampled_data = sampler.sample_tools(5)
     
