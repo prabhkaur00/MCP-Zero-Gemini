@@ -3,7 +3,8 @@ import numpy as np
 import re
 import time
 from typing import List, Dict, Any, Tuple, Optional
-import openai
+from openai import OpenAI
+import os
 
 
 class ToolMatcher:
@@ -40,21 +41,22 @@ class ToolMatcher:
         except Exception as e:
             raise ValueError(f"Error loading tool data: {e}")
     
-    def setup_openai_client(self, base_url: str, api_version: str, api_key: str) -> None:
+    def setup_openai_client(self, base_url: str = "", api_version: str = "", api_key: str = None) -> None:
         """
-        Setup the OpenAI client
-        
-        Args:
-            base_url: The base URL of the OpenAI API
-            api_version: The version of the OpenAI API
-            api_key: The API key
+        Setup the client. Here we use Google's OpenAI-compatible endpoint for Gemini.
         """
-        self.openai_client = openai.AzureOpenAI(
-            azure_endpoint=base_url,
-            api_version=api_version,
+        # Read key from env if not provided
+        api_key = api_key or os.environ.get("GOOGLE_API_KEY")
+        if not api_key:
+            raise RuntimeError("GOOGLE_API_KEY not set")
+
+        self.openai_client = OpenAI(
             api_key=api_key,
+            base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
         )
-    
+        # Switch default to Gemini's embedding model
+        self.embedding_model = os.environ.get("EMBED_MODEL", "text-embedding-004")
+
     def extract_tool_assistant(self, text: str) -> Tuple[Optional[str], Optional[str]]:
         """
         Extract the tool assistant tag content from the text

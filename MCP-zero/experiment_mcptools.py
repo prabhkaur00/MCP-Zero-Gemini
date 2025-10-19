@@ -13,14 +13,16 @@ from typing import List, Dict, Any, Tuple, Optional, Union
 from sampler import ToolSampler
 from matcher import ToolMatcher
 from reformatter import format_tools_as_functions
-from call_openai.function_call_gpt import (
-    chat_gpt4_1,
-    chat_claude3_5
-)
-from call_openai.gemini_adapter import chat_gemini
 from utils import generate_grid_search_params
+from openai import OpenAI
 
-
+GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+if "GOOGLE_API_KEY" not in os.environ:
+    raise RuntimeError("Set GOOGLE_API_KEY in your environment before running.")
+client = OpenAI(
+    api_key=os.environ["GOOGLE_API_KEY"],
+    base_url=GEMINI_BASE_URL,
+)
 
 def read_text_file(file_path: str) -> str:
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -47,7 +49,7 @@ def test_llm_retrieval(
     position_index: int = 0,
     use_random_selection: bool = False,
     output_dir: str = None,
-    model_name: str = "gpt-4.1"
+    model_name: str = "gemini-2.5-flash"
 ) -> Tuple[Dict[str, Any], Optional[int]]:
     """
     
@@ -93,18 +95,21 @@ def test_llm_retrieval(
     start_time = time.time()
     
     # 调用大模型
+    # 调用大模型 (Google Gemini via OpenAI-compatible Chat Completions)
+    success = False
     try:
-        if model_name.lower() == "gpt-4.1":
-            response = chat_gpt4_1(system_prompt, user_prompt)
-        elif model_name.lower().startswith("gemini"):
-            response = chat_gemini(system_prompt, user_prompt, model=model_name)
-        else:
-            response = chat_claude3_5(system_prompt, user_prompt)
-
+        resp = client.chat.completions.create(
+            model=model_name,  # e.g., "gemini-2.5-flash"
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+        )
+        response = (resp.choices[0].message.content or "").strip()
+        success = True
     except Exception as e:
-        print(f"Error: {str(e)}")
-        response = f"Error: {str(e)}"
-        success = False
+        response = f"Error: {e}"
+
     
     # 结束计时
     end_time = time.time()
@@ -124,7 +129,11 @@ def test_llm_retrieval(
     # 如果成功提取了描述，进行向量匹配
     if extracted_server_desc and extracted_tool_desc:
         # 初始化工具匹配器
-        matcher = ToolMatcher(top_servers=TOP_SERVERS, top_tools=TOP_TOOLS, embedding_provider="gemini")
+        matcher = ToolMatcher(top_servers=TOP_SERVERS, top_tools=TOP_TOOLS)
+        matcher.setup_openai_client(api_key=os.environ.get("GOOGLE_API_KEY"))
+
+        # if you added a helper method in matcher.py
+
 
         # 设置OpenAI客户端 (使用与data/mcp-tools相同的客户端配置)
         base_url = ""
@@ -306,7 +315,7 @@ def run_grid_search(
     sampled_data_cache = {}
     
     for (position_index, sample_size) in grid_points_list:
-        print(f"\n=== 处理样本: {position_index} / {sample_size} ===")
+        print(f"\n=== Process samples: {position_index} / {sample_size} ===")
         
         # 采样工具（或从缓存获取）
         if sample_size not in sampled_data_cache:
@@ -338,31 +347,31 @@ def run_grid_search(
             json.dump(all_results, f, ensure_ascii=False, indent=2)
         
         # 打印结果
-        print(f"  结果: {'✓' if result['is_correct'] else '✗'} "
-              f"耗时: {result['elapsed_time']:.2f}秒")
-        print(f"  目标服务器: {result['target_server_name']}, 目标工具: {result['target_tool_name']}")
-        print(f"  提取的服务器描述: {result['extracted_server_desc']}")
-        print(f"  提取的工具描述: {result['extracted_tool_desc']}")
-        print(f"  匹配的服务器: {result['matched_server']}, 匹配的工具: {result['matched_tool']}")
+        print(f"  result: {'✓' if result['is_correct'] else '✗'} "
+              f"time consumed: {result['elapsed_time']:.2f}sec")
+        print(f"  target server: {result['target_server_name']}, target tool: {result['target_tool_name']}")
+        print(f"  Extracted server description: {result['extracted_server_desc']}")
+        print(f"  Extracted tool description: {result['extracted_tool_desc']}")
+        print(f"  matching server: {result['matched_server']}, Matching tools: {result['matched_tool']}")
         
         # 等待一段时间，避免请求过于频繁
         if position_index != len(grid_points_list) - 1 or sample_size != len(grid_points_list) - 1:
-            print(f"  等待 {request_interval} 秒...")
+            print(f"  wait {request_interval} sec...")
             time.sleep(request_interval)
     
-    print(f"\n=== 网格搜索完成 ===")
-    print(f"总共测试了 {len(all_results)} 个配置")
-    print(f"结果已保存到: {results_file}")
+    print(f"\n=== Grid search completed ===")
+    print(f"Tested in total {len(all_results)} configuration")
+    print(f"Results have been saved to: {results_file}")
     
     # 计算正确率
     correct_count = sum(1 for result in all_results if result["is_correct"])
     accuracy = correct_count / len(all_results) if all_results else 0
-    print(f"总体正确率: {accuracy:.2%}")
+    print(f"Overall accuracy: {accuracy:.2%}")
 
 
 if __name__ == "__main__":
     # 默认数据路径
-    data_path = "./mcp-tools/mcp_tools_with_embedding_gemini_small.json"
+    data_path = "/Users/prabhleenkaur/Downloads/mcp_tools_with_embedding_gemini_small.json"
 
     
     # 运行网格搜索
