@@ -17,6 +17,7 @@ from call_openai.function_call_gpt import (
     chat_gpt4_1,
     chat_claude3_5
 )
+from call_openai.gemini_adapter import chat_gemini
 from utils import generate_grid_search_params
 
 
@@ -95,9 +96,11 @@ def test_llm_retrieval(
     try:
         if model_name.lower() == "gpt-4.1":
             response = chat_gpt4_1(system_prompt, user_prompt)
+        elif model_name.lower().startswith("gemini"):
+            response = chat_gemini(system_prompt, user_prompt, model=model_name)
         else:
             response = chat_claude3_5(system_prompt, user_prompt)
-        success = True
+
     except Exception as e:
         print(f"Error: {str(e)}")
         response = f"Error: {str(e)}"
@@ -121,13 +124,13 @@ def test_llm_retrieval(
     # 如果成功提取了描述，进行向量匹配
     if extracted_server_desc and extracted_tool_desc:
         # 初始化工具匹配器
-        matcher = ToolMatcher(top_servers=TOP_SERVERS, top_tools=TOP_TOOLS)
-        
+        matcher = ToolMatcher(top_servers=TOP_SERVERS, top_tools=TOP_TOOLS, embedding_provider="gemini")
+
         # 设置OpenAI客户端 (使用与data/mcp-tools相同的客户端配置)
         base_url = ""
         api_version = ""
         api_key = ""
-        matcher.setup_openai_client(base_url, api_version, api_key)
+        # matcher.setup_openai_client(base_url, api_version, api_key)
         
         # 准备匹配结果
         match_result = {
@@ -324,7 +327,7 @@ def run_grid_search(
             position_index=position_index,
             use_random_selection=False,
             output_dir=output_dir,
-            model_name="claude3.5"  # 可以选择使用 "claude3.5"
+            model_name="gemini-2.5-flash"  # 可以选择使用 "claude3.5"
         )
         
         # 添加到结果列表
@@ -359,12 +362,13 @@ def run_grid_search(
 
 if __name__ == "__main__":
     # 默认数据路径
-    data_path = "./mcp-tools/mcp_tools_with_embedding.json"
+    data_path = "./mcp-tools/mcp_tools_with_embedding_gemini_small.json"
+
     
     # 运行网格搜索
     run_grid_search(
         data_path=data_path,
-        num_position_ratios=20,  # 位置等分数量
-        num_sample_sizes=50,     # 样本大小数量
-        request_interval=3.0,    # 请求间隔2秒
+        num_position_ratios=8,  # 位置等分数量
+        num_sample_sizes=8,     # 样本大小数量
+        request_interval=6.0,    # 请求间隔2秒
     ) 
